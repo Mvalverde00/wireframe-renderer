@@ -17,8 +17,9 @@ PPM::~PPM() {
 }
 
 void PPM::set_pixel(int x, int y, Color c) {
-  assert(x >= 0 && x < width);
-  assert(y >= 0 && y < height);
+  if (x < 0 || x >= width || y < 0 || y >= height) {
+    return;
+  }
 
   pixels[y*this->width + x] = c;
 }

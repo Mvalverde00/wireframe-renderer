@@ -7,15 +7,15 @@
 #include "gfx.h"
 
 int main(int argc, char* argv[]) {
-  if (argc != 2) {
-    printf("Invalid usage!  Correct usage: ./my_prog <filename>\n");
+  if (argc != 4) {
+    printf("Invalid usage!  Correct usage: ./my_prog <filename> <xres> <yres>\n");
     exit(0);
   }
 
   Scene s = Scene(argv[1]);
 
   s.convert_NDC();
-  PPM ppm = PPM(700, 700);
+  PPM ppm = PPM(std::stoi(argv[2]), std::stoi(argv[3]));
   s.draw(ppm);
 /*
   draw_line(0, 0, 100, 199, ppm, RED);

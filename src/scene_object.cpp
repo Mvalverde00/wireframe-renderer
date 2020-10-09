@@ -94,9 +94,6 @@ void SceneObject::draw_face(Face& face, PPM& ppm) {
   Vertex v2 = this->vertices[face.v2];
   Vertex v3 = this->vertices[face.v3];
 
-  if (!in_ndc(v1) || !in_ndc(v2) || !in_ndc(v3)) {
-    return;
-  }
   ndc_to_pixel(v1.x, v1.y, ppm.get_width(), ppm.get_height(), (int*)&v1.x, (int*)&v1.y);
   ndc_to_pixel(v2.x, v2.y, ppm.get_width(), ppm.get_height(), (int*)&v2.x, (int*)&v2.y);
   ndc_to_pixel(v3.x, v3.y, ppm.get_width(), ppm.get_height(), (int*)&v3.x, (int*)&v3.y);
