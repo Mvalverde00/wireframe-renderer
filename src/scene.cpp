@@ -6,10 +6,13 @@
 #include <unordered_map>
 #include <cassert>
 #include <iostream>
+#include <vector>
 
 #include "Eigen/Dense"
 #include "scene_object.h"
 #include "parse_matrix.h"
+#include "vertex.h"
+#include "util.h"
 
 Scene::Scene() {
   this->cam = Camera();
@@ -18,7 +21,7 @@ Scene::Scene() {
 Scene::Scene(std::string filename) {
   std::ifstream stream = std::ifstream(filename);
   if (!stream) {
-    printf("File '%s' could not be opened\n", filename);
+    printf("File '%s' could not be opened\n", filename.c_str());
   }
 
   this->cam = Camera(stream);
@@ -69,26 +72,30 @@ void Scene::print() {
 }
 
 void Scene::draw(PPM& ppm) {
-  for (SceneObject obj : this->objs) {
+  for (SceneObject& obj : this->objs) {
+    std::vector<Vertex> copy = obj.vertices;
+
+    this->convert_NDC(obj);
+    ndc_to_pixel(obj, ppm);
     obj.draw(ppm);
+
+    obj.vertices = copy;
   }
 }
 
-void Scene::convert_NDC() {
+void Scene::convert_NDC(SceneObject& obj) {
   Eigen::Matrix4d cam_inv = this->cam.getInverse();
   Eigen::Matrix4d pers = this->cam.getPMatrix();
 
-  for (SceneObject& obj : this->objs) {
-    for (Vertex& v : obj.vertices) {
-      Eigen::Vector4d homo(v.x, v.y, v.z, 1);
-      Eigen::Vector4d c_coords = cam_inv * homo;
-      Eigen::Vector4d p_coords = pers * c_coords;
+  for (Vertex& v : obj.vertices) {
+    Eigen::Vector4d homo(v.x, v.y, v.z, 1);
+    Eigen::Vector4d c_coords = cam_inv * homo;
+    Eigen::Vector4d p_coords = pers * c_coords;
 
-      p_coords *= (1 / (-c_coords(2))); // account for homogeneous component = -z_c
+    p_coords *= (1 / (-c_coords(2))); // account for homogeneous component = -z_c
 
-      v.x = p_coords(0);
-      v.y = p_coords(1);
-      v.z = p_coords(2);
-    }
+    v.x = p_coords(0);
+    v.y = p_coords(1);
+    v.z = p_coords(2);
   }
 }

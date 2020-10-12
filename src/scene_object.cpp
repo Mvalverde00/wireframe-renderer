@@ -30,18 +30,29 @@ SceneObject::SceneObject(std::string name, const char* filename) {
   // vertices are one-indexed, so make a padding zeroth vertex.
   this->vertices.push_back(Vertex{0,0,0});
 
-  char type;
-  while (file_stream >> type) {
-    if (type == 'v') {
+  std::string line;
+  std::stringstream sstream;
+  while (getline(file_stream, line)) {
+    sstream = std::stringstream(line.substr(2));
+    std::string token = line.substr(0,2);
+
+    if (token == "v ") {
       Vertex vert;
-      file_stream >> vert.x >> vert.y >> vert.z;
+      sstream >> vert.x >> vert.y >> vert.z;
 
       this->vertices.push_back(vert);
-    } else if (type == 'f') {
+    } else if (token == "vn") {
+
+    } else if (token == "f ") {
       Face face;
-      file_stream >> face.v1 >> face.v2 >> face.v3;
+      int vertex_index;
+      while (sstream >> vertex_index) {
+        face.vertex_indices.push_back(vertex_index);
+      }
 
       this->faces.push_back(face);
+    } else if (token == "# ") {
+
     } else {
       throw std::ios_base::failure(
           "File formatted incorrectly, unexpected identifier encountered.");
@@ -69,13 +80,17 @@ void SceneObject::print() {
   printf("\n%s\n\n", this->name.c_str());
 
   // Start at one to skip zeroth padding vertex
-  for (int i = 1; i < this->vertices.size(); i++) {
+  for (size_t i = 1; i < this->vertices.size(); i++) {
     Vertex v = this->vertices[i];
     printf("v %f %f %f\n", v.x, v.y, v.z);
   }
 
-  for (Face face : this->faces) {
-    printf("f %d %d %d\n", face.v1, face.v2, face.v3);
+  for (Face& face : this->faces) {
+    printf("f ");
+    for (int idx : face.vertex_indices) {
+      printf("%d ", idx);
+    }
+    printf("\n");
   }
 }
 
@@ -83,25 +98,25 @@ void SceneObject::print_coords() {
   printf("\n%s\n", this->name.c_str());
 
   // Start at one to skip zeroth padding vertex
-  for (int i = 1; i < this->vertices.size(); i++) {
+  for (size_t i = 1; i < this->vertices.size(); i++) {
     Vertex v = this->vertices[i];
     std::cout << v.x << " " << v.y << " " << v.z << "\n";
   }
 }
 
 void SceneObject::draw_face(Face& face, PPM& ppm) {
-  Vertex v1 = this->vertices[face.v1];
-  Vertex v2 = this->vertices[face.v2];
-  Vertex v3 = this->vertices[face.v3];
+  Color c = {255,0,0};
+  for (size_t i = 0; i < face.vertex_indices.size() - 1; i++) {
+    int curr = face.vertex_indices[i];
+    int next = face.vertex_indices[i + 1];
+    Vertex& v1 = this->vertices[curr];
+    Vertex& v2 = this->vertices[next];
 
-  ndc_to_pixel(v1.x, v1.y, ppm.get_width(), ppm.get_height(), (int*)&v1.x, (int*)&v1.y);
-  ndc_to_pixel(v2.x, v2.y, ppm.get_width(), ppm.get_height(), (int*)&v2.x, (int*)&v2.y);
-  ndc_to_pixel(v3.x, v3.y, ppm.get_width(), ppm.get_height(), (int*)&v3.x, (int*)&v3.y);
-
-  Color c = random_color();
-  draw_line(*((int*)&v1.x), *((int*)&v1.y), *((int*)&v2.x), *((int*)&v2.y), ppm, c);
-  draw_line(*((int*)&v2.x), *((int*)&v2.y), *((int*)&v3.x), *((int*)&v3.y), ppm, c);
-  draw_line(*((int*)&v3.x), *((int*)&v3.y), *((int*)&v1.x), *((int*)&v1.y), ppm, c);
+    draw_line(v1.x, v1.y, v2.x, v2.y, ppm, c);
+  }
+  Vertex& last = this->vertices[face.vertex_indices[face.vertex_indices.size() - 1]];
+  Vertex& first = this->vertices[face.vertex_indices[0]];
+  draw_line(last.x, last.y, first.x, first.y, ppm, c);
 }
 
 void SceneObject::draw(PPM& ppm) {

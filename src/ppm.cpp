@@ -38,8 +38,8 @@ std::string PPM::serialize() {
   result += std::to_string(this->width) + " " + std::to_string(this->height) + "\n";
   result += "255\n";
 
-  for (size_t y = 0; y < height; y++) {
-    for (size_t x = 0; x < width; x++) {
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
       Color c = get_color(x, y);
       result += c.serialize() + "\n";
     }
