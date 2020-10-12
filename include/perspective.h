@@ -3,6 +3,10 @@
 
 #include "Eigen/Dense"
 
+
+/*
+ * A Camera Perspective
+ */
 struct Perspective {
   float near;
   float far;

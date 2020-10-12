@@ -3,12 +3,22 @@
 
 #include "vertex.h"
 #include "color.h"
+#include "scene_object.h"
+#include "ppm.h"
 
-void ndc_to_pixel(float x, float y, int width, int height, int* x_out, int* y_out);
+/* Given an (x,y) coordinate in NDC and a target (width, height), maps the (x, y)
+ smoothly in the range (0, width) and (0, height) and stores the output in x_out and y_out */
+void ndc_to_pixel(float x, float y, int width, int height, float* x_out, float* y_out);
 
+/* Maps all of a SceneObject's vertices (which are already in NDC) to screen pixel coordinates */
+void ndc_to_pixel(SceneObject& obj, PPM& ppm);
+
+
+/* Checks if a given point/vertex is inside the NDC bounding box (-1, 1) */
 bool in_ndc(float x, float y, float z);
 bool in_ndc(Vertex& v);
 
+/* Generates a random color */
 Color random_color();
 
 #endif

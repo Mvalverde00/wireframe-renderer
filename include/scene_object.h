@@ -33,6 +33,7 @@ struct SceneObject {
   /* Applies the given transformation matrix to every vertex of the object */
   void transform(Eigen::Matrix4d t_matrix);
 
+  /* Draw the wireframe version of the scene object to the given PPM */
   void draw(PPM& ppm);
   void draw_face(Face& face, PPM& ppm);
 };

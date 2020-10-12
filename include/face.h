@@ -1,14 +1,14 @@
 #ifndef __FACE_H__
 #define __FACE_H__
 
+#include <vector>
+
 /**
- * A triangular face defined by 3 vertices, whose indices are provided
+ * A triangular face defined by 3 or more vertices, whose indices are provided
  * in a 1-indexed manner.
  */
 struct Face {
-  int v1;
-  int v2;
-  int v3;
+  std::vector<int> vertex_indices;
 };
 
 #endif
