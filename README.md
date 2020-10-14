@@ -11,3 +11,5 @@ For example, `./wireframe scene.txt 600 600 | display` will display the rendered
 
 ### Notes
 A description of the line drawing algorithm used can be found in `gfx.cpp`.
+This program supports anti-aliased lines.  To use them, pass wireframe `1` as a fifth argument.
+e.g. `./wireframe scene.txt 600 600 1 | display`.  
