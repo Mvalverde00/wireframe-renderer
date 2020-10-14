@@ -3,7 +3,7 @@
 #include "ppm.h"
 #include "color.h"
 
-void draw_line(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool swap) {
+void draw_line_helper(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool swap) {
   int e = 0;
   int y = y0;
   int dx = x1 - x0;
@@ -54,16 +54,68 @@ void draw_line(int x0, int y0, int x1, int y1, PPM& ppm, Color c) {
 
   if (dy - dx >= 0) {
     if (y1 > y0) {
-      draw_line(y0, x0, y1, x1, ppm, c, true);
+      draw_line_helper(y0, x0, y1, x1, ppm, c, true);
     } else {
-      draw_line(y1, x1, y0, x0, ppm, c, true);
+      draw_line_helper(y1, x1, y0, x0, ppm, c, true);
     }
   } else {
     if (x1 > x0) {
-      draw_line(x0, y0, x1, y1, ppm, c, false);
+      draw_line_helper(x0, y0, x1, y1, ppm, c, false);
     } else {
-      draw_line(x1, y1, x0, y0, ppm, c, false);
+      draw_line_helper(x1, y1, x0, y0, ppm, c, false);
     }
   }
+}
 
+void draw_line_aa(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool swap) {
+  float y = (float) y0;
+  int dx = x1 - x0;
+  int dy = y1 - y0;
+  if (dx == 0) {
+    dx = 1;
+  }
+  
+  float m = (float)dy / (float)dx;
+  for (int x = x0; x <= x1; x++) {
+    int yi = (int) y;
+    float f = y - yi;
+
+    if (swap) {
+      ppm.set_pixel(y, x, c * (1-f));
+      ppm.set_pixel(y + 1, x, c * f);
+    } else {
+      ppm.set_pixel(x, y, c * (1-f));
+      ppm.set_pixel(x, y + 1, c * f);
+    }
+    y += m;
+  }
+}
+
+void draw_line_aa(int x0, int y0, int x1, int y1, PPM& ppm, Color c) {
+  int dy = y1 - y0;
+  int dx = x1 - x0;
+  if (dy < 0) dy *= -1;
+  if (dx < 0) dx *= -1;
+
+  if (dy - dx >= 0) {
+    if (y1 > y0) {
+      draw_line_aa(y0, x0, y1, x1, ppm, c, true);
+    } else {
+      draw_line_aa(y1, x1, y0, x0, ppm, c, true);
+    }
+  } else {
+    if (x1 > x0) {
+      draw_line_aa(x0, y0, x1, y1, ppm, c, false);
+    } else {
+      draw_line_aa(x1, y1, x0, y0, ppm, c, false);
+    }
+  }
+}
+
+void draw_line(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool aa) {
+  if (aa) {
+    draw_line_aa(x0, y0, x1, y1, ppm, c);
+  } else {
+    draw_line(x0, y0, x1, y1, ppm, c);
+  }
 }
