@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <stdbool.h>
 
 #include "camera.h"
 #include "scene_object.h"
@@ -26,8 +27,9 @@ public:
   /* Converts a SceneObject's vertices to NDC using the camera */
   void convert_NDC(SceneObject& obj);
 
-  /* Renders all of the SceneObjects to the given PPM */
-  void draw(PPM& ppm);
+  /* Renders all of the SceneObjects to the given PPM.  Can be done with or
+  * without antialiasing. */
+  void draw(PPM& ppm, bool aa);
 };
 
 #endif

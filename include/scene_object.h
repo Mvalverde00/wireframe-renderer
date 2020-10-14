@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <string>
-#include "Eigen/Dense"
+#include <stdbool.h>
 
+#include "Eigen/Dense"
 #include "face.h"
 #include "vertex.h"
 #include "ppm.h"
@@ -34,8 +35,7 @@ struct SceneObject {
   void transform(Eigen::Matrix4d t_matrix);
 
   /* Draw the wireframe version of the scene object to the given PPM */
-  void draw(PPM& ppm);
-  void draw_face(Face& face, PPM& ppm);
+  void draw(PPM& ppm, bool aa);
 };
 
 #endif

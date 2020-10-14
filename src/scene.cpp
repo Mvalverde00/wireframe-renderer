@@ -71,13 +71,15 @@ void Scene::print() {
   }
 }
 
-void Scene::draw(PPM& ppm) {
+void Scene::draw(PPM& ppm, bool aa) {
   for (SceneObject& obj : this->objs) {
+    // Create a copy of the vertices we can use to restore them,
+    // so that the draw call isn't destructive.
     std::vector<Vertex> copy = obj.vertices;
 
     this->convert_NDC(obj);
     ndc_to_pixel(obj, ppm);
-    obj.draw(ppm);
+    obj.draw(ppm, aa);
 
     obj.vertices = copy;
   }

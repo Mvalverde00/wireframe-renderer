@@ -104,23 +104,19 @@ void SceneObject::print_coords() {
   }
 }
 
-void SceneObject::draw_face(Face& face, PPM& ppm) {
-  Color c = {255,0,0};
-  for (size_t i = 0; i < face.vertex_indices.size() - 1; i++) {
-    int curr = face.vertex_indices[i];
-    int next = face.vertex_indices[i + 1];
-    Vertex& v1 = this->vertices[curr];
-    Vertex& v2 = this->vertices[next];
-
-    draw_line(v1.x, v1.y, v2.x, v2.y, ppm, c);
-  }
-  Vertex& last = this->vertices[face.vertex_indices[face.vertex_indices.size() - 1]];
-  Vertex& first = this->vertices[face.vertex_indices[0]];
-  draw_line(last.x, last.y, first.x, first.y, ppm, c);
-}
-
-void SceneObject::draw(PPM& ppm) {
+void SceneObject::draw(PPM& ppm, bool aa) {
+  Color c = {255,255,255};
   for (Face& face : this->faces) {
-    this->draw_face(face, ppm);
+    for (size_t i = 0; i < face.vertex_indices.size() - 1; i++) {
+      int curr = face.vertex_indices[i];
+      int next = face.vertex_indices[i + 1];
+      Vertex& v1 = this->vertices[curr];
+      Vertex& v2 = this->vertices[next];
+
+      draw_line(v1.x, v1.y, v2.x, v2.y, ppm, c, aa);
+    }
+    Vertex& last = this->vertices[face.vertex_indices[face.vertex_indices.size() - 1]];
+    Vertex& first = this->vertices[face.vertex_indices[0]];
+    draw_line(last.x, last.y, first.x, first.y, ppm, c, aa);
   }
 }
