@@ -13,6 +13,9 @@ struct Color {
   uint8_t b;
 
   std::string serialize();
+
+  Color operator* (float intensity) const;
+  friend Color operator* (float intensity, const Color& c);
 };
 
 const Color BLACK = {0,0,0};

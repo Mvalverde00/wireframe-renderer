@@ -12,3 +12,11 @@ std::string Color::serialize() {
 
   return result;
 }
+
+Color Color::operator*(float intensity) const {
+  return Color {(uint8_t)(this->r * intensity), (uint8_t)(this->g * intensity), (uint8_t)(this->b * intensity)};
+}
+
+Color operator*(float intensity, const Color& c) {
+  return c * intensity;
+}
