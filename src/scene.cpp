@@ -11,8 +11,9 @@
 #include "Eigen/Dense"
 #include "scene_object.h"
 #include "parse_matrix.h"
-#include "vertex.h"
+#include "vector3f.h"
 #include "util.h"
+#include "material.h"
 
 Scene::Scene() {
   this->cam = Camera();
@@ -26,12 +27,20 @@ Scene::Scene(std::string filename) {
 
   this->cam = Camera(stream);
 
+  std::string line;
+  while (getline(stream, line)) {
+    if (line.empty()) {
+      break;
+    }
+    PointLight light = PointLight(line);
+    this->lights.push_back(light);
+  }
+
   // Associates every object name with a corresponding SceneObject. These
   // have no transformations associated with them.  The int is used to track
   // how many copies of the object we have made.
   std::unordered_map<std::string, std::pair<SceneObject, int>> bases;
 
-  std::string line;
   getline(stream, line);
   assert(line.compare("objects:") == 0);
   while (getline(stream, line)) {
@@ -57,6 +66,9 @@ Scene::Scene(std::string filename) {
     bases[name].second++;
     copy.name = name + "_copy" + std::to_string(bases[name].second);
 
+    Material mat = Material(stream);
+    copy.mat = mat;
+
     Eigen::Matrix4d t_matrix = parse_file(stream);
     copy.transform(t_matrix);
 
@@ -75,7 +87,7 @@ void Scene::draw(PPM& ppm, bool aa) {
   for (SceneObject& obj : this->objs) {
     // Create a copy of the vertices we can use to restore them,
     // so that the draw call isn't destructive.
-    std::vector<Vertex> copy = obj.vertices;
+    std::vector<Vector3f> copy = obj.vertices;
 
     this->convert_NDC(obj);
     ndc_to_pixel(obj, ppm);
@@ -89,7 +101,7 @@ void Scene::convert_NDC(SceneObject& obj) {
   Eigen::Matrix4d cam_inv = this->cam.getInverse();
   Eigen::Matrix4d pers = this->cam.getPMatrix();
 
-  for (Vertex& v : obj.vertices) {
+  for (Vector3f& v : obj.vertices) {
     Eigen::Vector4d homo(v.x, v.y, v.z, 1);
     Eigen::Vector4d c_coords = cam_inv * homo;
     Eigen::Vector4d p_coords = pers * c_coords;

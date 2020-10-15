@@ -74,7 +74,7 @@ void draw_line_aa(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool swap) 
   if (dx == 0) {
     dx = 1;
   }
-  
+
   float m = (float)dy / (float)dx;
   for (int x = x0; x <= x1; x++) {
     int yi = (int) y;

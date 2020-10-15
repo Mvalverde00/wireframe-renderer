@@ -7,8 +7,9 @@
 
 #include "Eigen/Dense"
 #include "face.h"
-#include "vertex.h"
+#include "vector3f.h"
 #include "ppm.h"
+#include "material.h"
 
 /*
  * A 3D object parsed from a given .obj file.  One of possibly many objects in a
@@ -16,8 +17,10 @@
  */
 struct SceneObject {
   std::string name;
-  std::vector<Vertex> vertices;
+  std::vector<Vector3f> vertices;
+  std::vector<Vector3f> normals;
   std::vector<Face> faces;
+  Material mat;
 
   /* Given a name for the object and a file in which it is stored,
   parse the given vertices/faces and store them in a workable format */

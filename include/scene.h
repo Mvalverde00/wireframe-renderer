@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "scene_object.h"
 #include "ppm.h"
+#include "point_light.h"
 
 /*
  * Defines a world filled with the specified SceneObjects and a Camera detailing
@@ -15,6 +16,7 @@
  */
 class Scene {
   std::vector<SceneObject> objs;
+  std::vector<PointLight> lights;
   Camera cam;
 
 public:

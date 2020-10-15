@@ -4,16 +4,18 @@
 #include <exception>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 #include "gfx.h"
 #include "ppm.h"
-#include "vertex.h"
+#include "vector3f.h"
 #include "face.h"
 #include "util.h"
 
 SceneObject::SceneObject() {
   this->name = "";
-  this->vertices.push_back(Vertex{0,0,0});
+  this->vertices.push_back(Vector3f{0,0,0});
+  this->normals.push_back(Vector3f{0,0,0});
 }
 
 SceneObject::SceneObject(std::string name, const char* filename) {
@@ -27,8 +29,9 @@ SceneObject::SceneObject(std::string name, const char* filename) {
     throw std::ios_base::failure(error_msg);
   }
 
-  // vertices are one-indexed, so make a padding zeroth vertex.
-  this->vertices.push_back(Vertex{0,0,0});
+  // vertices & normals are one-indexed, so make a padding zeroth vertex.
+  this->vertices.push_back(Vector3f{0, 0, 0});
+  this->normals.push_back(Vector3f{0, 0, 0});
 
   std::string line;
   std::stringstream sstream;
@@ -37,17 +40,31 @@ SceneObject::SceneObject(std::string name, const char* filename) {
     std::string token = line.substr(0,2);
 
     if (token == "v ") {
-      Vertex vert;
+      Vector3f vert;
       sstream >> vert.x >> vert.y >> vert.z;
 
       this->vertices.push_back(vert);
     } else if (token == "vn") {
+      Vector3f norm;
+      sstream >> norm.x >> norm.y >> norm.z;
 
+      this->normals.push_back(norm);
     } else if (token == "f ") {
       Face face;
-      int vertex_index;
-      while (sstream >> vertex_index) {
-        face.vertex_indices.push_back(vertex_index);
+      char temp;
+      int index;
+
+      while (sstream >> index) {
+        face.vertex_indices.push_back(index);
+
+        if (sstream.peek() == '/') {
+          sstream >> temp;
+          if (sstream.peek() == '/') {
+            sstream >> temp;
+            sstream >> index;
+            face.normal_indices.push_back(index);
+          }
+        }
       }
 
       this->faces.push_back(face);
@@ -62,7 +79,7 @@ SceneObject::SceneObject(std::string name, const char* filename) {
 
 void SceneObject::transform(Eigen::Matrix4d t_matrix) {
   for (size_t i = 0; i < this->vertices.size(); i++) {
-    Vertex v = this->vertices[i];
+    Vector3f v = this->vertices[i];
 
     Eigen::Vector4d vertex_vector(v.x, v.y, v.z, 1);
 
@@ -81,7 +98,7 @@ void SceneObject::print() {
 
   // Start at one to skip zeroth padding vertex
   for (size_t i = 1; i < this->vertices.size(); i++) {
-    Vertex v = this->vertices[i];
+    Vector3f v = this->vertices[i];
     printf("v %f %f %f\n", v.x, v.y, v.z);
   }
 
@@ -99,7 +116,7 @@ void SceneObject::print_coords() {
 
   // Start at one to skip zeroth padding vertex
   for (size_t i = 1; i < this->vertices.size(); i++) {
-    Vertex v = this->vertices[i];
+    Vector3f v = this->vertices[i];
     std::cout << v.x << " " << v.y << " " << v.z << "\n";
   }
 }
@@ -110,13 +127,13 @@ void SceneObject::draw(PPM& ppm, bool aa) {
     for (size_t i = 0; i < face.vertex_indices.size() - 1; i++) {
       int curr = face.vertex_indices[i];
       int next = face.vertex_indices[i + 1];
-      Vertex& v1 = this->vertices[curr];
-      Vertex& v2 = this->vertices[next];
+      Vector3f& v1 = this->vertices[curr];
+      Vector3f& v2 = this->vertices[next];
 
       draw_line(v1.x, v1.y, v2.x, v2.y, ppm, c, aa);
     }
-    Vertex& last = this->vertices[face.vertex_indices[face.vertex_indices.size() - 1]];
-    Vertex& first = this->vertices[face.vertex_indices[0]];
+    Vector3f& last = this->vertices[face.vertex_indices[face.vertex_indices.size() - 1]];
+    Vector3f& first = this->vertices[face.vertex_indices[0]];
     draw_line(last.x, last.y, first.x, first.y, ppm, c, aa);
   }
 }

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <exception>
 
 Eigen::Matrix4d create_translation_matrix(float dx, float dy, float dz) {
   Eigen::Matrix4d m;
@@ -69,7 +70,7 @@ Eigen::Matrix4d parse_file(std::ifstream& stream) {
         temp = create_scalar_matrix(x, y, z);
         break;
       default:
-        throw "Invalid file format";
+        throw std::ios_base::failure("Invalid file format");
         break;
     }
     base = temp * base;

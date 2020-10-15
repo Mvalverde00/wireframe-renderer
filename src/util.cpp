@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <cstdint>
 
-#include "vertex.h"
+#include "vector3f.h"
 #include "color.h"
 
 void ndc_to_pixel(float x, float y, int width, int height, float* x_out, float* y_out) {
@@ -13,7 +13,7 @@ void ndc_to_pixel(float x, float y, int width, int height, float* x_out, float* 
 }
 
 void ndc_to_pixel(SceneObject& obj, PPM& ppm) {
-  for (Vertex& v : obj.vertices) {
+  for (Vector3f& v : obj.vertices) {
     ndc_to_pixel(v.x, v.y, ppm.get_width(), ppm.get_height(), &v.x, &v.y);
   }
 }
@@ -23,7 +23,7 @@ bool in_ndc(float x, float y, float z) {
   return (x >= -1 && x <= 1) && (y >= -1 && y <= 1);
 }
 
-bool in_ndc(Vertex& v) {
+bool in_ndc(Vector3f& v) {
   return in_ndc(v.x, v.y, v.z);
 }
 

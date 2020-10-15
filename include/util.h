@@ -1,7 +1,7 @@
 #ifndef __MY_UTIL_H__
 #define __MY_UTIL_H__
 
-#include "vertex.h"
+#include "vector3f.h"
 #include "color.h"
 #include "scene_object.h"
 #include "ppm.h"
@@ -16,7 +16,7 @@ void ndc_to_pixel(SceneObject& obj, PPM& ppm);
 
 /* Checks if a given point/vertex is inside the NDC bounding box (-1, 1) */
 bool in_ndc(float x, float y, float z);
-bool in_ndc(Vertex& v);
+bool in_ndc(Vector3f& v);
 
 /* Generates a random color */
 Color random_color();

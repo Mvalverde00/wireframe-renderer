@@ -6,7 +6,7 @@
 #include <string>
 
 #include "parse_matrix.h"
-#include "vertex.h"
+#include "vector3f.h"
 #include "perspective.h"
 
 Camera::Camera() {
@@ -16,7 +16,7 @@ Camera::Camera() {
 
 Camera::Camera(std::ifstream& stream) : Camera::Camera() {
   std::string temp;
-  Vertex point;
+  Vector3f point;
   float aux;
 
   stream >> temp; // Camera:
