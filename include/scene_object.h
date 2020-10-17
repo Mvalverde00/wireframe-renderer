@@ -7,9 +7,10 @@
 
 #include "Eigen/Dense"
 #include "face.h"
-#include "vector3f.h"
+
 #include "ppm.h"
 #include "material.h"
+#include "gfx.h"
 
 /*
  * A 3D object parsed from a given .obj file.  One of possibly many objects in a
@@ -17,8 +18,8 @@
  */
 struct SceneObject {
   std::string name;
-  std::vector<Vector3f> vertices;
-  std::vector<Vector3f> normals;
+  std::vector<Eigen::Vector3d> vertices;
+  std::vector<Eigen::Vector3d> normals;
   std::vector<Face> faces;
   Material mat;
 
@@ -34,7 +35,8 @@ struct SceneObject {
   void print_coords();
 
 
-  /* Applies the given transformation matrix to every vertex of the object */
+  /* Applies the given transformation matrix to every vertex of the object.
+   * Also performs a suitable transformation on the vertex normals */
   void transform(Eigen::Matrix4d t_matrix);
 
   /* Draw the wireframe version of the scene object to the given PPM */

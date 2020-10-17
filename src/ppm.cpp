@@ -2,18 +2,27 @@
 
 #include <string>
 #include <cassert>
+#include <limits>
 
 PPM::PPM(int width, int height) {
   this->width = width;
   this->height = height;
 
   this->pixels = (Color*) calloc(width * height, sizeof(Color));
+  this->zbuffer = (float*) calloc(width * height, sizeof(float));
+
+  for (int x = 0; x < width; x++) {
+    for (int y = 0; y< height; y++) {
+      this->zbuffer[y*this->width + x] = std::numeric_limits<float>::max();
+    }
+  }
 }
 
 PPM::PPM() : PPM(0,0) {};
 
 PPM::~PPM() {
   free(this->pixels);
+  free(this->zbuffer);
 }
 
 void PPM::set_pixel(int x, int y, Color c) {
@@ -29,6 +38,18 @@ Color PPM::get_color(int x, int y) {
   assert(y >= 0 && y < height);
 
   return pixels[y*this->width + x];
+}
+
+bool PPM::buffer(int x, int y, float z) {
+  if (x < 0 || x >= width || y < 0 || y >= height) {
+    return false;
+  }
+
+  if (z <= this->zbuffer[y*this->width + x]) {
+    this->zbuffer[y*this->width + x] = z;
+    return true;
+  }
+  return false;
 }
 
 std::string PPM::serialize() {

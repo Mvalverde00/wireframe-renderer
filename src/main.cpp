@@ -21,7 +21,8 @@ int main(int argc, char* argv[]) {
     aa = std::stoi(argv[4]) == 1;
   }
 
-  s.draw(ppm, aa);
+  //s.draw(ppm, aa);
+  s.draw_gouraud(ppm);
 
 
   std::cout << ppm.serialize();

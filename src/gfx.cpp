@@ -1,7 +1,9 @@
 #include "gfx.h"
 
+#include "Eigen/Dense"
 #include "ppm.h"
 #include "color.h"
+#include "util.h"
 
 void draw_line_helper(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool swap) {
   int e = 0;
@@ -117,5 +119,33 @@ void draw_line(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool aa) {
     draw_line_aa(x0, y0, x1, y1, ppm, c);
   } else {
     draw_line(x0, y0, x1, y1, ppm, c);
+  }
+}
+
+
+void draw_triangle(Eigen::Vector3d ndc0, Eigen::Vector3d ndc1, Eigen::Vector3d ndc2, Color c0, Color c1, Color c2, PPM& ppm) {
+  Eigen::Vector2d p0 = ndc_to_screen(ndc0, ppm.get_width(), ppm.get_height());
+  Eigen::Vector2d p1 = ndc_to_screen(ndc1, ppm.get_width(), ppm.get_height());
+  Eigen::Vector2d p2 = ndc_to_screen(ndc2, ppm.get_width(), ppm.get_height());
+
+  int xmin = std::min(std::min(p0.x(), p1.x()), p2.x());
+  int xmax = std::max(std::max(p0.x(), p1.x()), p2.x());
+  int ymin = std::min(std::min(p0.y(), p1.y()), p2.y());
+  int ymax = std::max(std::max(p0.y(), p1.y()), p2.y());
+
+  for (int x = xmin; x < xmax; x++) {
+    for (int y = ymin; y < ymax; y++) {
+      double alpha = compute_alpha(p0, p1, p2, x, y);
+      double beta = compute_beta(p0, p1, p2, x, y);
+      double gamma = compute_gamma(p0, p1, p2, x, y);
+      if (in_range(alpha, 0, 1) && in_range(beta, 0, 1) && in_range(gamma, 0, 1)) {
+        Eigen::Vector3d ndc_avg = (alpha * ndc0) + (beta * ndc1) + (gamma * ndc2);
+        if (in_ndc(ndc_avg) && ppm.buffer(x, y, ndc_avg.z())) {
+          Color result;
+          result = alpha * c0 + beta * c1 + gamma * c2;
+          ppm.set_pixel(x, y, result);
+        }
+      }
+    }
   }
 }

@@ -14,6 +14,11 @@ class Material {
 public:
   Material();
   Material(std::ifstream& stream);
+
+  Color get_ambient();
+  Color get_diffuse();
+  Color get_specular();
+  float get_shininess();
 };
 
 #endif

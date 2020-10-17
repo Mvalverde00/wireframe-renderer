@@ -42,3 +42,18 @@ Material::Material(std::ifstream& stream) {
   assert(temp == "shininess");
   sstream >> this->shininess;
 }
+
+Color Material::get_ambient() {
+  return this->ambient;
+}
+
+Color Material::get_diffuse() {
+  return this->diffuse;
+}
+
+Color Material::get_specular() {
+  return this->specular;
+}
+float Material::get_shininess() {
+  return this->shininess;
+}

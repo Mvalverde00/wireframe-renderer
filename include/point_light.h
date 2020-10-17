@@ -4,18 +4,17 @@
 #include <string>
 
 #include "color.h"
+#include "Eigen/Dense"
 
 class PointLight {
-  float x;
-  float y;
-  float z;
-
-  Color c;
+public:
+  Eigen::Vector3d pos;
+  Color color;
   float k; // attenuation
 
-public:
   PointLight();
   PointLight(std::string& line);
+
 };
 
 #endif

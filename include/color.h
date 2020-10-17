@@ -14,7 +14,15 @@ struct Color {
 
   std::string serialize();
 
+  void set_r(float r);
+  void set_g(float g);
+  void set_b(float b);
+
   Color operator* (float intensity) const;
+  Color operator* (const Color& other) const;// componentwise min
+  Color operator+ (const Color& other) const;
+  Color& operator+= (const Color& other);
+
   friend Color operator* (float intensity, const Color& c);
 };
 

@@ -37,6 +37,8 @@ public:
   /* Projection Matrix */
   Eigen::Matrix4d getPMatrix();
 
+  Eigen::Vector3d get_pos();
+
 
 };
 

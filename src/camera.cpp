@@ -6,7 +6,7 @@
 #include <string>
 
 #include "parse_matrix.h"
-#include "vector3f.h"
+
 #include "perspective.h"
 
 Camera::Camera() {
@@ -16,16 +16,16 @@ Camera::Camera() {
 
 Camera::Camera(std::ifstream& stream) : Camera::Camera() {
   std::string temp;
-  Vector3f point;
+  Eigen::Vector3d point;
   float aux;
 
   stream >> temp; // Camera:
   assert(temp.compare("camera:") == 0);
-  stream >> temp >> point.x >> point.y >> point.z; //position x y z
-  this->translate(point.x, point.y, point.z);
+  stream >> temp >> point.x() >> point.y() >> point.z(); //position x y z
+  this->translate(point.x(), point.y(), point.z());
 
-  stream >> temp >> point.x >> point.y >> point.z >> aux; // orientation x y z ang
-  this->rotate(point.x, point.y, point.z, aux);
+  stream >> temp >> point.x() >> point.y() >> point.z() >> aux; // orientation x y z ang
+  this->rotate(point.x(), point.y(), point.z(), aux);
 
   float n, f, l, r, t, b;
   stream >> temp >> n >> temp >> f >> temp >> l >> temp >> r >> temp >> t
@@ -71,4 +71,8 @@ Eigen::Matrix4d Camera::getInverse() {
 
 Eigen::Matrix4d Camera::getPMatrix() {
   return this->perspective.matrix();
+}
+
+Eigen::Vector3d Camera::get_pos() {
+  return this->pos;
 }
