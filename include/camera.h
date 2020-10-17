@@ -23,11 +23,11 @@ public:
   Camera(std::ifstream& stream);
 
   /* Translate the camera by the specified deltas */
-  void translate(float x, float y, float z);
+  void translate(double x, double y, double z);
 
   /* Rotates the camera about the given unit vector by the given angle.  Will
     work even if the camera is not at the origin */
-  void rotate(float ux, float uy, float uz, float ang);
+  void rotate(double ux, double uy, double uz, double ang);
   void print();
 
   /* Matrix and Inverse Matrix of this.m */

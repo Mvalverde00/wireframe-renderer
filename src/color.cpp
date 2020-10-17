@@ -14,7 +14,7 @@ std::string Color::serialize() {
   return result;
 }
 
-void Color::set_r(float r) {
+void Color::set_r(double r) {
   if (r < 0) {
     r = 0.0;
   }
@@ -25,7 +25,7 @@ void Color::set_r(float r) {
   this->r = (uint8_t)r;
 }
 
-void Color::set_g(float g) {
+void Color::set_g(double g) {
   if (g < 0) {
     g = 0.0;
   }
@@ -36,7 +36,7 @@ void Color::set_g(float g) {
   this->g = g;
 }
 
-void Color::set_b(float b) {
+void Color::set_b(double b) {
   if (b < 0) {
     b = 0.0;
   }
@@ -47,7 +47,7 @@ void Color::set_b(float b) {
   this->b = (uint8_t)b;
 }
 
-Color Color::operator*(float intensity) const {
+Color Color::operator*(double intensity) const {
   return Color {(uint8_t)(this->r * intensity), (uint8_t)(this->g * intensity), (uint8_t)(this->b * intensity)};
 }
 
@@ -75,6 +75,6 @@ Color Color::operator+(const Color& other) const {
   return result;
 }
 
-Color operator*(float intensity, const Color& c) {
+Color operator*(double intensity, const Color& c) {
   return c * intensity;
 }

@@ -13,7 +13,7 @@ class PPM {
   /* 1D Array of pixels of length width * height.  Can be thought of as 2D
     array with clever indexing. */
   Color* pixels;
-  float* zbuffer;
+  double* zbuffer;
 
 public:
   PPM();
@@ -27,7 +27,7 @@ public:
 
   /* Checks if the z value is less than or equal to the buffered z value.  If it
    * is, overwrite the buffered z value with the new z value*/
-  bool buffer(int x, int y, float z);
+  bool buffer(int x, int y, double z);
 
   int get_width();
   int get_height();

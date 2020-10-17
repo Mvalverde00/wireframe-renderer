@@ -130,7 +130,7 @@ Color Scene::calc_lighting(Eigen::Vector3d& point, Eigen::Vector3d& normal, Mate
   Color c_d = mat.get_diffuse();
   Color c_a = mat.get_ambient();
   Color c_s = mat.get_specular();
-  float shininess = mat.get_shininess();
+  double shininess = mat.get_shininess();
 
   Color diffuse_sum = Color {0, 0, 0};
   Color specular_sum = Color {0, 0, 0};
@@ -142,7 +142,7 @@ Color Scene::calc_lighting(Eigen::Vector3d& point, Eigen::Vector3d& normal, Mate
     Color l_c = light.color;
     Eigen::Vector3d l_dir = (l_p - point).normalized();
 
-    float dist_sqd = (point - l_p).norm();
+    double dist_sqd = (point - l_p).norm();
     l_c = l_c * (1 / (1 + light.k * dist_sqd));
 
     double dot = normal.dot(l_dir);

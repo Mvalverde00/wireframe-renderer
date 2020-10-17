@@ -9,11 +9,11 @@ PPM::PPM(int width, int height) {
   this->height = height;
 
   this->pixels = (Color*) calloc(width * height, sizeof(Color));
-  this->zbuffer = (float*) calloc(width * height, sizeof(float));
+  this->zbuffer = (double*) calloc(width * height, sizeof(double));
 
   for (int x = 0; x < width; x++) {
     for (int y = 0; y< height; y++) {
-      this->zbuffer[y*this->width + x] = std::numeric_limits<float>::max();
+      this->zbuffer[y*this->width + x] = std::numeric_limits<double>::max();
     }
   }
 }
@@ -40,7 +40,7 @@ Color PPM::get_color(int x, int y) {
   return pixels[y*this->width + x];
 }
 
-bool PPM::buffer(int x, int y, float z) {
+bool PPM::buffer(int x, int y, double z) {
   if (x < 0 || x >= width || y < 0 || y >= height) {
     return false;
   }

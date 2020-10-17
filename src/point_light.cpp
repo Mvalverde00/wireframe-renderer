@@ -22,7 +22,7 @@ PointLight::PointLight(std::string& line) {
   sstream >> temp;
   assert(temp == ",");
 
-  float r, g, b;
+  double r, g, b;
   sstream >> r >> g >> b;
   this->color = Color {(uint8_t)(r * 255), (uint8_t)(g * 255), (uint8_t)(b * 255)};
 

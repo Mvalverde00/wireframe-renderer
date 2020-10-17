@@ -7,7 +7,7 @@
 #include <sstream>
 #include <exception>
 
-Eigen::Matrix4d create_translation_matrix(float dx, float dy, float dz) {
+Eigen::Matrix4d create_translation_matrix(double dx, double dy, double dz) {
   Eigen::Matrix4d m;
   m << 1, 0, 0, dx,
        0, 1, 0, dy,
@@ -16,13 +16,19 @@ Eigen::Matrix4d create_translation_matrix(float dx, float dy, float dz) {
   return m;
 }
 
-Eigen::Matrix4d create_rotation_matrix(float ux, float uy, float uz, float ang) {
+Eigen::Matrix4d create_rotation_matrix(double ux, double uy, double uz, double ang) {
   Eigen::Matrix4d m;
 
+  Eigen::Vector3d axis(ux, uy, uz);
+  axis.normalize();
+  ux = axis.x();
+  uy = axis.y();
+  uz = axis.z();
+
   // Improve runtine by precomputing some common values
-  float c = cos(ang);
-  float s = sin(ang);
-  float one_minus_cos = 1 - c;
+  double c = cos(ang);
+  double s = sin(ang);
+  double one_minus_cos = 1 - c;
 
   m << ux*ux + (1 - ux*ux)*c, ux*uy*one_minus_cos - uz*s, ux*uz*one_minus_cos + uy*s, 0,
        uy*ux*one_minus_cos + uz*s, uy*uy + (1-uy*uy)*c, uy*uz*one_minus_cos - ux*s, 0,
@@ -31,7 +37,7 @@ Eigen::Matrix4d create_rotation_matrix(float ux, float uy, float uz, float ang) 
   return m;
 }
 
-Eigen::Matrix4d create_scalar_matrix(float sx, float sy, float sz) {
+Eigen::Matrix4d create_scalar_matrix(double sx, double sy, double sz) {
   Eigen::Matrix4d m;
 
   m << sx, 0, 0, 0,
@@ -56,7 +62,7 @@ Eigen::Matrix4d parse_file(std::ifstream& stream) {
     std::stringstream str_stream(line);
     str_stream >> type;
 
-    float x, y, z, ang;
+    double x, y, z, ang;
     str_stream >> x >> y >> z;
     switch(type) {
       case 't':

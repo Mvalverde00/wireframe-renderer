@@ -9,7 +9,7 @@ class Material {
   Color ambient;
   Color diffuse;
   Color specular;
-  float shininess;
+  double shininess;
 
 public:
   Material();
@@ -18,7 +18,7 @@ public:
   Color get_ambient();
   Color get_diffuse();
   Color get_specular();
-  float get_shininess();
+  double get_shininess();
 };
 
 #endif

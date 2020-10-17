@@ -12,7 +12,7 @@ Material::Material(std::ifstream& stream) {
   std::string temp;
   std::stringstream sstream;
 
-  float r, g, b;
+  double r, g, b;
 
   getline(stream, line);
   sstream = std::stringstream(line);
@@ -54,6 +54,6 @@ Color Material::get_diffuse() {
 Color Material::get_specular() {
   return this->specular;
 }
-float Material::get_shininess() {
+double Material::get_shininess() {
   return this->shininess;
 }

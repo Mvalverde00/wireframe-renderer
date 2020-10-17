@@ -17,7 +17,7 @@ Camera::Camera() {
 Camera::Camera(std::ifstream& stream) : Camera::Camera() {
   std::string temp;
   Eigen::Vector3d point;
-  float aux;
+  double aux;
 
   stream >> temp; // Camera:
   assert(temp.compare("camera:") == 0);
@@ -27,7 +27,7 @@ Camera::Camera(std::ifstream& stream) : Camera::Camera() {
   stream >> temp >> point.x() >> point.y() >> point.z() >> aux; // orientation x y z ang
   this->rotate(point.x(), point.y(), point.z(), aux);
 
-  float n, f, l, r, t, b;
+  double n, f, l, r, t, b;
   stream >> temp >> n >> temp >> f >> temp >> l >> temp >> r >> temp >> t
       >> temp >> b;
   this->perspective = Perspective(n, f, l, r, t, b);
@@ -37,7 +37,7 @@ Camera::Camera(std::ifstream& stream) : Camera::Camera() {
   getline(stream, temp);
 }
 
-void Camera::translate(float x, float y, float z) {
+void Camera::translate(double x, double y, double z) {
   Eigen::Matrix4d t = create_translation_matrix(x, y, z);
   this->pos(0) += x;
   this->pos(1) += y;
@@ -45,7 +45,7 @@ void Camera::translate(float x, float y, float z) {
   this->m = t * m;
 }
 
-void Camera::rotate(float ux, float uy, float uz, float ang) {
+void Camera::rotate(double ux, double uy, double uz, double ang) {
   Eigen::Matrix4d r = create_rotation_matrix(ux, uy, uz, ang);
   Eigen::Matrix4d t_inv = create_translation_matrix(-this->pos(0), -this->pos(1), -this->pos(2));
   Eigen::Matrix4d t = create_translation_matrix(this->pos(0), this->pos(1), this->pos(2));

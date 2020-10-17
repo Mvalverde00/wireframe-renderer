@@ -8,15 +8,15 @@
  * A Camera Perspective
  */
 struct Perspective {
-  float near;
-  float far;
-  float left;
-  float right;
-  float top;
-  float bottom;
+  double near;
+  double far;
+  double left;
+  double right;
+  double top;
+  double bottom;
 
   Perspective();
-  Perspective(float n, float f, float l, float r, float t, float b);
+  Perspective(double n, double f, double l, double r, double t, double b);
   Eigen::Matrix4d matrix();
 
   void print();

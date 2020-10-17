@@ -6,13 +6,13 @@
 #include <fstream>
 
 /* Creates a 4d translation matrix for the given values */
-Eigen::Matrix4d create_translation_matrix(float dx, float dy, float dz);
+Eigen::Matrix4d create_translation_matrix(double dx, double dy, double dz);
 
 /* Creates a 4d rotation matrix about the given unit vector by the specified angle */
-Eigen::Matrix4d create_rotation_matrix(float ux, float uy, float uz, float ang);
+Eigen::Matrix4d create_rotation_matrix(double ux, double uy, double uz, double ang);
 
 /*Creates a 4d scaling matrix for the given scaling factors */
-Eigen::Matrix4d create_scalar_matrix(float sx, float sy, float sz);
+Eigen::Matrix4d create_scalar_matrix(double sx, double sy, double sz);
 
 
 /* Given a file stream pointing to a series of transformations, processes them into

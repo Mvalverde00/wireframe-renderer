@@ -10,7 +10,7 @@ class PointLight {
 public:
   Eigen::Vector3d pos;
   Color color;
-  float k; // attenuation
+  double k; // attenuation
 
   PointLight();
   PointLight(std::string& line);

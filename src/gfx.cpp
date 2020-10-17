@@ -70,17 +70,17 @@ void draw_line(int x0, int y0, int x1, int y1, PPM& ppm, Color c) {
 }
 
 void draw_line_aa(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool swap) {
-  float y = (float) y0;
+  double y = (double) y0;
   int dx = x1 - x0;
   int dy = y1 - y0;
   if (dx == 0) {
     dx = 1;
   }
 
-  float m = (float)dy / (float)dx;
+  double m = (double)dy / (double)dx;
   for (int x = x0; x <= x1; x++) {
     int yi = (int) y;
-    float f = y - yi;
+    double f = y - yi;
 
     if (swap) {
       ppm.set_pixel(y, x, c * (1-f));
@@ -124,6 +124,11 @@ void draw_line(int x0, int y0, int x1, int y1, PPM& ppm, Color c, bool aa) {
 
 
 void draw_triangle(Eigen::Vector3d ndc0, Eigen::Vector3d ndc1, Eigen::Vector3d ndc2, Color c0, Color c1, Color c2, PPM& ppm) {
+  Eigen::Vector3d cross = (ndc2 - ndc1).cross(ndc0 - ndc1);
+  if (cross.z() < 0) {
+    return;
+  }
+
   Eigen::Vector2d p0 = ndc_to_screen(ndc0, ppm.get_width(), ppm.get_height());
   Eigen::Vector2d p1 = ndc_to_screen(ndc1, ppm.get_width(), ppm.get_height());
   Eigen::Vector2d p2 = ndc_to_screen(ndc2, ppm.get_width(), ppm.get_height());
@@ -133,8 +138,8 @@ void draw_triangle(Eigen::Vector3d ndc0, Eigen::Vector3d ndc1, Eigen::Vector3d n
   int ymin = std::min(std::min(p0.y(), p1.y()), p2.y());
   int ymax = std::max(std::max(p0.y(), p1.y()), p2.y());
 
-  for (int x = xmin; x < xmax; x++) {
-    for (int y = ymin; y < ymax; y++) {
+  for (int x = xmin; x <= xmax; x++) {
+    for (int y = ymin; y <= ymax; y++) {
       double alpha = compute_alpha(p0, p1, p2, x, y);
       double beta = compute_beta(p0, p1, p2, x, y);
       double gamma = compute_gamma(p0, p1, p2, x, y);

@@ -4,7 +4,7 @@
 
 #include "Eigen/Dense"
 
-Perspective::Perspective(float n, float f, float l, float r, float t, float b) {
+Perspective::Perspective(double n, double f, double l, double r, double t, double b) {
   this->near = n;
   this->far = f;
   this->left = l;
